@@ -1,0 +1,150 @@
+{% extends "tienda/tienda_base.html" %}
+{% load static %}
+{% block title %}Café Hallyu Letters{% endblock %}
+
+{% block content %}
+<div class="banner">
+    <div class="banner-container">
+        <video autoplay muted loop playsinline class="banner-video">
+            <source src="{% static 'tienda/imagenes/video.mp4' %}" type="video/mp4">
+        </video>
+        <div class="content-banner">
+            <p>Carpe Diem</p>
+            <h2><span class="frase-1">Aprovecha cada instante</span> <br> <span class="frase-2">Disfruta el momento con un buen café</span></h2>
+            <a href="#promociones">Comprar ahora</a>
+        </div>
+    </div>
+</div>
+
+<main class="main-content">
+    <div class="container container-features">
+        <div class="card-feature">
+            <ion-icon name="airplane-outline"></ion-icon>
+            <div class="feature-content">
+                <span>Envío gratuito</span>
+                <p>En pedido superior a $150</p>
+            </div>
+        </div>
+        <div class="card-feature">
+            <ion-icon name="cash-outline"></ion-icon>
+            <div class="feature-content">
+                <span>Contrareembolso</span>
+                <p>100% garantía de devolución de dinero</p>
+            </div>
+        </div>
+        <div class="card-feature">
+            <ion-icon name="gift-outline"></ion-icon>
+            <div class="feature-content">
+                <span>Regalos Especiales</span>
+                <p>Ofrece bebidas especiales con regalo</p>
+            </div>
+        </div>
+        <a href="#informacion" style="text-decoration:none; color:inherit;">
+            <div class="card-feature">
+                <ion-icon name="id-card-outline"></ion-icon>
+                <div class="feature-content">
+                    <span>Servicio al cliente</span>
+                    <p>LLámenos al 119-912-2110</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="container top-categories">
+        <h2 class="heading-1">Mejores Categorías</h2>
+        <div class="container-categories">
+            {% for cat in categorias %}
+            <div class="card-category" {% if cat.imagen %}style="background-image: url('{{ cat.imagen.url }}'); background-size: cover; background-position: center;"{% endif %}>
+                <p>{{ cat.nombre }}</p>
+                <a href="{% url 'tienda_categoria' cat.nombre %}">Ver más</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="promociones" class="container top-products">
+        <h2 class="heading-1">Mejores Productos</h2>
+
+        <div class="container-products">
+            {% for producto in productos_destacados %}
+            <div class="card-product">
+                <div class="container-img">
+                    {% if producto.foto %}
+                        <img src="{{ producto.foto.url }}" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <img src="{% static 'tienda/imagenes/default-producto.jpg' %}" alt="{{ producto.nombre }}">
+                    {% endif %}
+                </div>
+                <div class="content-card-product">
+                    <h3>{{ producto.nombre }}</h3>
+                    <p class="precio price">${{ producto.precio }}</p>
+                    <a href="#" class="agregar-carrito btn-2" data-id="{{ producto.id }}" style="display:block; text-align:center; margin-top:10px;">Comprar</a>
+                    
+                </div>
+            </div>
+            {% empty %}
+            <p>Todavía no hay productos cargados.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="container specials">
+        <h2 class="heading-1">Especiales</h2>
+
+        <div class="container-products">
+            {% for producto in productos_especiales %}
+            <div class="card-product">
+                <div class="container-img">
+                    {% if producto.foto %}
+                        <img src="{{ producto.foto.url }}" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <img src="{% static 'tienda/imagenes/default-producto.jpg' %}" alt="{{ producto.nombre }}">
+                    {% endif %}
+                </div>
+                <div class="content-card-product">
+                    <h3>{{ producto.nombre }}</h3>
+                    <p class="precio price">${{ producto.precio }}</p>
+                    <a href="#" class="agregar-carrito btn-2" data-id="{{ producto.id }}" style="display:block; text-align:center; margin-top:10px;">Comprar</a>
+                    
+                </div>
+            </div>
+            {% empty %}
+            <p>Sin especiales por ahora.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="container blogs">
+        <h2 class="heading-1">Últimos Blogs</h2>
+
+        <div class="container-blogs">
+            {% for blog in blogs %}
+            <div class="card-blog">
+                <div class="container-img">
+                    {% if blog.imagen %}
+                        <img src="{{ blog.imagen.url }}" alt="{{ blog.titulo }}">
+                    {% endif %}
+                    <div class="button-group-blog">
+                        <span class="btn-like" data-blog-id="{{ blog.id }}">
+                            <i class="fa-regular fa-heart"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="content-blog">
+                    <a href="{% url 'blog_detalle' blog.id %}">
+                        <h3>{{ blog.titulo }}</h3>
+                    </a>
+                    <span>{{ blog.fecha|date:"F Y" }}</span>
+                    <p>{{ blog.resumen }}</p>
+                    <div class="btn-read-more">
+                        <a href="{% url 'blog_detalle' blog.id %}">Leer más</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>Sin publicaciones todavía.</p>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content_header %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 cafe-page-title">Café Hallyu Admin</h1>
+            </div>
+
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right cafe-breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'index' %}">Inicio</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Dashboard
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<section class="content">
+
+    <div class="container-fluid">
+
+        <!-- TARJETAS -->
+
+        <div class="row">
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+
+                    <div class="inner">
+                        <h3>{{ total_pedidos }}</h3>
+                        <p>Pedidos realizados</p>
+                    </div>
+
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+
+                    <a href="{% url 'lista_pedidos' %}" class="small-box-footer">
+                        Ver pedidos
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+
+                    <div class="inner">
+                        <h3>${{ valor_inventario }}</h3>
+                        <p>Valor del inventario</p>
+                    </div>
+
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+
+                    <a href="{% url 'lista_productos' %}" class="small-box-footer">
+                        Ver inventario
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+
+                    <div class="inner">
+                        <h3>{{ total_productos }}</h3>
+                        <p>Productos registrados</p>
+                    </div>
+
+                    <div class="icon">
+                        <i class="ion ion-coffee"></i>
+                    </div>
+
+                    <a href="{% url 'lista_productos' %}" class="small-box-footer">
+                        Ver productos
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+
+                    <div class="inner">
+                        <h3>{{ stock_bajo }}</h3>
+                        <p>Productos con stock bajo</p>
+                    </div>
+
+                    <div class="icon">
+                        <i class="ion ion-alert-circled"></i>
+                    </div>
+
+                    <a href="{% url 'lista_productos' %}" class="small-box-footer">
+                        Revisar
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BIENVENIDA Y ACCESOS -->
+
+        <div class="row">
+
+            <div class="col-lg-8">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-mug-hot mr-1 cafe-icon-accent"></i>
+                            Bienvenido
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <h5 class="font-weight-bold">
+                            Bienvenido, {{ request.user.first_name|default:request.user.username }}
+                        </h5>
+
+                        <p class="cafe-text-muted">
+                            Bienvenido al panel de administración de <strong>Café Hallyu</strong>.
+                            Desde aquí puedes gestionar toda la información del negocio de forma rápida y segura.
+                        </p>
+
+                        <hr class="cafe-divider">
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <i class="fas fa-box cafe-icon-accent"></i>
+                                    Gestión de productos
+                                </p>
+
+                                <p class="mb-2">
+                                    <i class="fas fa-shopping-cart cafe-icon-accent"></i>
+                                    Administración de pedidos
+                                </p>
+
+                                <p class="mb-2">
+                                    <i class="fas fa-tags cafe-icon-accent"></i>
+                                    Organización por categorías
+                                </p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <i class="fas fa-warehouse cafe-icon-accent"></i>
+                                    Control de inventario
+                                </p>
+
+                                <p class="mb-2">
+                                    <i class="fas fa-chart-line cafe-icon-accent"></i>
+                                    Reportes de ventas
+                                </p>
+
+                                <p class="mb-2">
+                                    <i class="fas fa-cog cafe-icon-accent"></i>
+                                    Configuración del sistema
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <hr class="cafe-divider">
+
+                        <small class="cafe-text-muted">
+                            <i class="far fa-calendar-alt"></i> {{ fecha }}
+                            &nbsp;&nbsp;&nbsp;
+                            <i class="far fa-clock"></i> {{ hora }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Accesos rápidos
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <a href="{% url 'agregar_producto' %}" class="btn btn-cafe btn-block mb-2">
+                            <i class="fas fa-plus"></i>
+                            Nuevo producto
+                        </a>
+
+                        <a href="{% url 'agregar_categoria' %}" class="btn btn-cafe-soft btn-block mb-2">
+                            <i class="fas fa-folder-plus"></i>
+                            Nueva categoría
+                        </a>
+
+                        <a href="{% url 'lista_pedidos' %}" class="btn btn-cafe-outline btn-block mb-2">
+                            <i class="fas fa-shopping-cart"></i>
+                            Pedidos
+                        </a>
+
+                        <a href="{% url 'lista_productos' %}" class="btn btn-cafe-outline btn-block">
+                            <i class="fas fa-box-open"></i>
+                            Inventario
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ÚLTIMOS PEDIDOS Y CLIENTES -->
+
+        <div class="row">
+
+            <div class="col-lg-6">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Últimos pedidos
+                        </h3>
+                    </div>
+
+                    <div class="card-body table-responsive p-0">
+
+                        <table class="table table-hover cafe-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for pedido in ultimos_pedidos %}
+
+                                <tr>
+
+                                    <td>{{ pedido.id }}</td>
+                                    <td>{{ pedido.cliente }}</td>
+                                    <td class="cafe-money">${{ pedido.total }}</td>
+                                    <td>{{ pedido.estado }}</td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="4" class="text-center cafe-text-muted">
+                                        No existen pedidos.
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CLIENTES -->
+
+            <div class="col-lg-6">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Clientes recientes
+                        </h3>
+                    </div>
+
+                    <div class="card-body table-responsive p-0">
+
+                        <table class="table table-hover cafe-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for cliente in clientes_recientes %}
+
+                                <tr>
+
+                                    <td>{{ cliente.nombre }}</td>
+                                    <td>{{ cliente.email }}</td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="2" class="text-center cafe-text-muted">
+                                        No existen clientes.
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CATEGORÍAS Y STOCK -->
+
+        <div class="row">
+
+            <div class="col-lg-6">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Categorías
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-striped cafe-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Categoría</th>
+                                    <th>Cantidad</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for categoria in categorias %}
+
+                                <tr>
+
+                                    <td>{{ categoria.nombre }}</td>
+                                    <td>{{ categoria.total }}</td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="2" class="text-center cafe-text-muted">
+                                        No existen categorías.
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-6">
+
+                <div class="card cafe-card-alert">
+
+                    <div class="card-header">
+
+                        <h3 class="card-title">
+                            Productos con stock bajo
+                        </h3>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-striped cafe-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Stock</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for producto in productos_stock_bajo %}
+
+                                <tr>
+
+                                    <td>{{ producto.nombre }}</td>
+                                    <td>
+                                        <span class="badge badge-cafe-nuevo">
+                                            {{ producto.stock }}
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="2" class="text-center cafe-text-muted">
+                                        No existen productos con stock bajo.
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

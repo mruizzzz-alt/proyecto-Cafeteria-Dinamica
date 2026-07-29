@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Hallyu Dashboard</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/jqvmap/jqvmap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.min.css' %}">
+  <!-- Tema café minimalista: sobreescribe AdminLTE con la paleta de la cafetería -->
+  <link rel="stylesheet" href="{% static 'principal/cafe-theme.css' %}?v=2">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed cafe-theme">
+<div class="wrapper">
+
+  <!-- Preloader -->
+  <div class="preloader flex-column justify-content-center align-items-center">
+    {% if negocio and negocio.logo %}
+      <img class="animation__shake" src="{{ negocio.logo.url }}" alt="logo" height="56" width="56">
+    {% else %}
+      <img class="animation__shake" src="{% static 'dist/img/logocaffe.png' %}" alt="logo" height="56" width="56">
+    {% endif %}
+  </div>
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand cafe-navbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'index' %}" class="nav-link">Inicio</a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Sidebar -->
+  <aside class="main-sidebar cafe-sidebar">
+    <!-- Brand -->
+    <a href="{% url 'tienda_index' %}" class="brand-link">
+      {% if negocio and negocio.logo %}
+        <img src="{{ negocio.logo.url }}" alt="logo" class="brand-image img-circle" style="opacity:.9">
+      {% else %}
+        <img src="{% static 'dist/img/logocaffe.png' %}" alt="logo" class="brand-image img-circle" style="opacity:.9">
+      {% endif %}
+      <span class="brand-text">Café Hallyu</span>
+    </a>
+
+    <div class="sidebar">
+      <!-- User panel -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+        <div class="image">
+          {% if profile and profile.photo %}
+            <img src="{{ profile.photo.url }}" class="img-circle" alt="Usuario" style="width:48px;height:48px;object-fit:cover;">
+          {% else %}
+            <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle" alt="Usuario" style="width:48px;height:48px;object-fit:cover;">
+          {% endif %}
+        </div>
+        <div class="info">
+          {% if user.is_authenticated %}
+            <span class="d-block cafe-username">{{ user.first_name|default:user.username }}</span>
+          {% else %}
+            <a href="{% url 'login' %}" class="d-block cafe-username">Iniciar sesión</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Menú -->
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+          <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+            <i class="nav-icon fas fa-chart-line"></i>
+            <p>Estadísticas</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'lista_productos' %}" class="nav-link {% if request.resolver_match.url_name == 'lista_productos' %}active{% endif %}">
+            <i class="nav-icon fas fa-coffee"></i>
+            <p>Productos</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'lista_categorias' %}" class="nav-link {% if request.resolver_match.url_name == 'lista_categorias' %}active{% endif %}">
+            <i class="nav-icon fas fa-tags"></i>
+            <p>Categorías</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'lista_blogs' %}" class="nav-link {% if request.resolver_match.url_name == 'lista_blogs' %}active{% endif %}">
+            <i class="nav-icon fas fa-feather-alt"></i>
+            <p>Blog</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'pedidos' %}" class="nav-link {% if request.resolver_match.url_name == 'pedidos' %}active{% endif %}">
+            <i class="nav-icon fas fa-receipt"></i>
+            <p>Pedidos</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'index3' %}" class="nav-link {% if request.resolver_match.url_name == 'index3' %}active{% endif %}">
+            <i class="nav-icon fas fa-user-friends"></i>
+            <p>Clientes</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'ventas' %}" class="nav-link {% if request.resolver_match.url_name == 'ventas' %}active{% endif %}">
+            <i class="nav-icon fas fa-dollar-sign"></i>
+            <p>Ventas</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'configuracion' %}" class="nav-link {% if request.resolver_match.url_name == 'configuracion' %}active{% endif %}">
+            <i class="nav-icon fas fa-cog"></i>
+            <p>Configuración</p>
+          </a>
+        </li>
+        <li class="nav-item mt-2">
+          <form method="post" action="{% url 'logout' %}" class="cafe-logout-form">
+            {% csrf_token %}
+            <button type="submit" class="nav-link cafe-logout">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>Cerrar sesión</p>
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper cafe-content">
+    {% block content_header %}{% endblock %}
+    {% block content %}{% endblock %}
+  </div>
+
+  <footer class="main-footer cafe-footer">
+    <strong>&copy; 2014-2021 Café Hallyu.</strong> Todos los derechos reservados.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Versión</b> 3.2.0-rc
+    </div>
+  </footer>
+
+  <aside class="control-sidebar control-sidebar-dark"></aside>
+</div>
+
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
+<script src="{% static 'plugins/jqvmap/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<script src="{% static 'plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<script src="{% static 'dist/js/demo.js' %}"></script>
+<script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

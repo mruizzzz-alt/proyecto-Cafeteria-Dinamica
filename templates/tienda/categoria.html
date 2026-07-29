@@ -1,0 +1,30 @@
+{% extends "tienda/tienda_base.html" %}
+{% load static %}
+{% block title %}{{ categoria_nombre }} - Café Hallyu Letters{% endblock %}
+
+{% block content %}
+<div class="cafe-container">
+    <h2 class="heading-1">{{ categoria_nombre }}</h2>
+    <div class="container container-products">
+        {% for producto in productos %}
+        <div class="card-product">
+            <div class="container-img">
+                {% if producto.foto %}
+                    <img src="{{ producto.foto.url }}" alt="{{ producto.nombre }}">
+                {% else %}
+                    <img src="{% static 'tienda/imagenes/default-producto.jpg' %}" alt="{{ producto.nombre }}">
+                {% endif %}
+            </div>
+            <div class="content-card-product">
+                <h3>{{ producto.nombre }}</h3>
+                <p class="precio price">${{ producto.precio }}</p>
+                <a href="#" class="agregar-carrito btn-2" data-id="{{ producto.id }}" style="display:block; text-align:center; margin-top:10px;">Comprar</a>
+                
+            </div>
+        </div>
+        {% empty %}
+        <p>Todavía no hay productos en esta categoría.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

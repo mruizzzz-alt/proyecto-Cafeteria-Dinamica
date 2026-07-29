@@ -1,0 +1,81 @@
+{% extends "tienda/tienda_base.html" %}
+{% load static %}
+{% block title %}Mi cuenta - Café Hallyu Letters{% endblock %}
+{% block content %}
+<div class="container" style="padding: 60px 20px; max-width: 900px; margin: 0 auto;">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div style="background:#d4edda; color:#155724; padding:12px 20px; border-radius:8px; margin-bottom:20px;">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <h2 style="color: var(--primary-color); margin-bottom: 30px;">Mi cuenta</h2>
+
+    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+
+        <div style="flex: 1; min-width: 300px; background: #fff; border-radius: 14px; padding: 25px; box-shadow: 0 6px 18px rgba(0,0,0,0.08);">
+            <h3 style="margin-bottom: 20px;">Datos personales</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="text-align:center; margin-bottom: 20px;">
+                    {% if profile.photo %}
+                        <img src="{{ profile.photo.url }}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border: 3px solid var(--primary-color);">
+                    {% else %}
+                        <img src="{% static 'tienda/img/user-placeholder.png' %}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border: 3px solid var(--primary-color);" onerror="this.style.display='none'">
+                    {% endif %}
+                    <br>
+                    <input type="file" name="photo" style="margin-top:10px;">
+                </div>
+                <label>Nombre</label>
+                <input type="text" name="first_name" value="{{ request.user.first_name }}" style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid #ddd;">
+                <label>Teléfono</label>
+                <input type="text" name="phone" value="{{ profile.phone }}" style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid #ddd;">
+                <button type="submit" name="guardar_perfil" class="btn-login" style="width:auto; padding: 10px 25px;">Guardar cambios</button>
+            </form>
+        </div>
+
+        <div style="flex: 1; min-width: 300px; background: #fff; border-radius: 14px; padding: 25px; box-shadow: 0 6px 18px rgba(0,0,0,0.08);">
+            <h3 style="margin-bottom: 20px;">Cambiar contraseña</h3>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form_password %}
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<small style="color:red;">{{ field.errors|striptags }}</small>{% endif %}
+                    <br><br>
+                {% endfor %}
+                <button type="submit" name="cambiar_password" class="btn-login" style="width:auto; padding: 10px 25px;">Cambiar contraseña</button>
+            </form>
+        </div>
+
+    </div>
+
+    <div style="margin-top: 30px; background: #fff; border-radius: 14px; padding: 25px; box-shadow: 0 6px 18px rgba(0,0,0,0.08);">
+        <h3 style="margin-bottom: 20px;">Mis últimos pedidos</h3>
+        <table style="width:100%;">
+            <thead>
+                <tr style="text-align:left; border-bottom: 2px solid #eee;">
+                    <th style="padding:8px;">#</th>
+                    <th style="padding:8px;">Fecha</th>
+                    <th style="padding:8px;">Estado</th>
+                    <th style="padding:8px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr style="border-bottom: 1px solid #f0f0f0;">
+                    <td style="padding:8px;">#{{ pedido.id }}</td>
+                    <td style="padding:8px;">{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+                    <td style="padding:8px;">{{ pedido.get_estado_display }}</td>
+                    <td style="padding:8px; font-weight:600;">${{ pedido.total }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="padding:20px; text-align:center; color:#999;">Aún no tienes pedidos.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

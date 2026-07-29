@@ -1,0 +1,125 @@
+/* ==========================================
+   TEMA CAFÉ & LATTE (SOLO OVERRIDES DE COLOR)
+   ========================================== */
+
+:root {
+  --cafe-oscuro: #3D2314;
+  --cafe-medio: #5A3826;
+  --caramelo: #C87D55;
+  --crema-fondo: #FDFBF7;
+  --latte-suave: #F4EAE1;
+  --texto-oscuro: #2B2118;
+}
+
+/* 1. Fondos y contenedores principales */
+body, 
+.content-wrapper, 
+.main-footer {
+  background-color: var(--crema-fondo) !important;
+  color: var(--texto-oscuro) !important;
+}
+
+/* 2. Barra lateral (Sidebar) */
+.main-sidebar, 
+.sidebar-dark-primary {
+  background-color: var(--cafe-oscuro) !important;
+}
+
+/* ==========================================
+   CORRECCIÓN DE TAMAÑO PARA MENÚ LATERAL (ADMINLTE)
+   ========================================== */
+
+/* Tamaño base de la barra lateral */
+.main-sidebar {
+  font-size: 0.9rem !important;
+}
+
+/* Marca / Logo superior */
+.brand-link {
+  font-size: 1.1rem !important;
+  padding: 0.8125rem 0.5rem !important;
+}
+
+.brand-link .brand-image {
+  max-height: 33px !important;
+  width: auto !important;
+}
+
+/* Items del menú lateral */
+.nav-sidebar .nav-item .nav-link {
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.9rem !important;
+}
+
+/* Iconos del menú */
+.nav-sidebar .nav-link i,
+.nav-sidebar .nav-link .nav-icon {
+  font-size: 1rem !important;
+  margin-right: 0.5rem !important;
+  width: 1.6rem !important;
+  text-align: center !important;
+}
+
+/* Foto de perfil del usuario en el sidebar */
+.user-panel img {
+  width: 2.1rem !important;
+  height: 2.1rem !important;
+}
+
+.user-panel .info {
+  font-size: 0.9rem !important;
+}
+
+.brand-link {
+  background-color: #2B2118 !important;
+  border-bottom: 1px solid var(--cafe-medio) !important;
+  color: var(--latte-suave) !important;
+}
+
+.sidebar a, 
+.nav-sidebar .nav-link {
+  color: var(--latte-suave) !important;
+}
+
+.nav-sidebar .nav-item .nav-link.active {
+  background-color: var(--caramelo) !important;
+  color: #FFFFFF !important;
+}
+
+.nav-sidebar .nav-item .nav-link:hover {
+  background-color: var(--cafe-medio) !important;
+  color: #FFFFFF !important;
+}
+
+/* 3. Barra Superior (Navbar) */
+.main-header.navbar {
+  background-color: var(--crema-fondo) !important;
+  border-bottom: 2px solid var(--latte-suave) !important;
+}
+
+.main-header .nav-link {
+  color: var(--cafe-oscuro) !important;
+}
+
+/* 4. Tarjetas y Cajas del Dashboard */
+.card-header {
+  background-color: var(--cafe-oscuro) !important;
+  color: var(--latte-suave) !important;
+}
+
+.small-box.bg-info { background-color: var(--caramelo) !important; color: #FFF !important; }
+.small-box.bg-success { background-color: #8A9A86 !important; color: #FFF !important; }
+.small-box.bg-warning { background-color: var(--latte-suave) !important; color: var(--cafe-oscuro) !important; }
+.small-box.bg-danger { background-color: #B33939 !important; color: #FFF !important; }
+
+/* 5. Botones */
+.btn-primary, input[type=submit] {
+  background-color: var(--caramelo) !important;
+  border-color: var(--caramelo) !important;
+  color: #FFF !important;
+}
+
+.btn-primary:hover, input[type=submit]:hover {
+  background-color: #A0633D !important;
+  border-color: #A0633D !important;
+}

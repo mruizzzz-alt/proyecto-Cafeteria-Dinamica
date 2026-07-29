@@ -1,0 +1,396 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}Café Hallyu Letters{% endblock %}</title>
+	<link rel="icon" href="{% static 'tienda/imagenes/favicon.ico' %}" type="image/x-icon">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+	<link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+</head>
+<script>
+
+</script>
+<body>
+<div id="toast-notificacion" style="position:fixed; top:20px; right:20px; background:#5a3826; color:#fff; padding:16px 26px; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.3); z-index:9999; display:none; font-weight:600; font-size:14px; max-width:320px;"></div>
+		<div class="container-hero">
+			<div class="container hero">
+				<div class="customer-support">
+					<ion-icon name="id-card-outline"></ion-icon>
+					<div class="content-customer-support">
+						<span class="text">Soporte al cliente</span>
+						<span class="number">119-912-2110</span>
+					</div>
+				</div>
+
+				<div class="container-logo">
+					<ion-icon name="cafe-sharp"></ion-icon>
+					<h1 class="logo"><a href="{% url 'tienda_index' %}"><span class="titulo-cafe">Café</span> <span class="titulo-resto">Hallyu Letters</span></a></h1>
+				</div>
+
+				<div class="container-user">
+					<ul>
+						<li class="submenu">
+							{% if user.is_authenticated %}
+							<ion-icon name="person-circle-outline" id="img-usuario"></ion-icon>
+							<div id="menuUsuario">
+								<p class="menu-usuario-nombre">Hola, {{ user.first_name|default:user.username }}</p>
+								<a href="{% url 'mi_cuenta' %}" class="btn-2" style="display:block; text-align:center; margin-bottom:8px;">Mi cuenta</a>
+								<form method="post" action="{% url 'logout' %}">
+									{% csrf_token %}
+									<button type="submit" class="btn-2" style="width:100%;">Cerrar sesión</button>
+								</form>
+							</div>
+							{% else %}
+							<ion-icon name="person-outline" id="img-usuario" onclick="document.getElementById('loginPopup').classList.add('active')"></ion-icon>
+							{% endif %}
+						</li>
+						<li class="submenu">
+							<ion-icon name="basket-outline" id="img-carrito"></ion-icon>
+							<div id="carrito">
+								<h3 class="carrito-titulo">Mi Carrito</h3>
+    							<table id="lista-carrito">
+									<tbody></tbody>
+								</table>	
+								<div class="carrito-total">
+    								<span>Total:</span>
+    								<span id="carrito-total-monto">$0.00</span>
+								</div>
+								<a href="#" id="vaciar-carrito" class="btn-2">Vaciar Carrito</a>
+								{% if user.is_authenticated %}
+								<select id="metodo-pago" style="width:100%; margin-top:10px; padding:8px; border-radius:6px;">
+    								<option value="efectivo">Efectivo</option>
+    								<option value="tarjeta">Tarjeta</option>
+   									<option value="transferencia">Transferencia</option>
+								</select>
+
+								<div id="info-efectivo" class="metodo-info" style="margin-top:10px; padding:10px; background:#f8f4f0; border-radius:8px; font-size:13px;">
+    								Pagarás en efectivo al recibir tu pedido.
+								</div>
+
+								<div id="info-tarjeta" class="metodo-info" style="display:none; margin-top:10px;">
+									<input type="text" id="numero-tarjeta" placeholder="Número de tarjeta" maxlength="19" style="width:100%; padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid #ddd;">
+									<div style="display:flex; gap:8px;">
+										<input type="text" id="fecha-tarjeta" placeholder="MM/AA" maxlength="5" style="width:50%; padding:8px; border-radius:6px; border:1px solid #ddd;">
+										<input type="text" id="cvv-tarjeta" placeholder="CVV" maxlength="3" style="width:50%; padding:8px; border-radius:6px; border:1px solid #ddd;">
+									</div>
+								</div>
+
+								<div id="info-transferencia" class="metodo-info" style="display:none; margin-top:10px; padding:10px; background:#f8f4f0; border-radius:8px; font-size:13px;">
+									<strong>Datos para transferencia:</strong><br>
+									Banco: Pichincha<br>
+									Cuenta de ahorros: 1234567890<br>
+									A nombre de: Café Hallyu Letters
+								</div>
+								<a href="#" id="finalizar-compra" class="btn-2" style="margin-top:8px;">Finalizar compra</a>
+								{% else %}
+								<a href="{% url 'login' %}" class="btn-2" style="margin-top:8px;" onclick="window.location.href=this.href; return false;"> Inicia sesión para comprar </a>
+								{% endif %}
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		{% if not user.is_authenticated %}
+		<!-- FORMULARIO DE INICIO DE SESIÓN (POPUP) -->
+		<div id="loginPopup" class="popup">
+			<div class="popup-content">
+				<span class="close-btn">&times;</span>
+				<h2>INICIAR SESIÓN</h2>
+				<form method="post" action="{% url 'login' %}">
+					{% csrf_token %}
+					<label>Correo electrónico</label>
+					<input type="email" name="email" placeholder="ejemplo@correo.com" required>
+					<label>Contraseña</label>
+					<input type="password" name="password" placeholder="Ingrese su contraseña" required>
+					<button type="submit" class="btn-login">INGRESAR</button>
+				</form>
+				<p class="signup-text">¿No tienes cuenta? <a href="{% url 'registro' %}">Crear una</a></p>
+			</div>
+		</div>
+		<!-- POPUP REGISTRO -->
+		<div id="registerPopup" class="popup">
+			<div class="popup-content">
+				<span class="close-register">&times;</span>
+				<h2>CREAR CUENTA</h2>
+				<form method="post" action="{% url 'registro' %}">
+					{% csrf_token %}
+					<label>Nombre completo</label>
+					<input type="text" name="nombre" placeholder="Tu nombre" required>
+					<label>Correo electrónico</label>
+					<input type="email" name="email" placeholder="ejemplo@correo.com" required>
+					<label>Contraseña</label>
+					<input type="password" name="password" placeholder="Crea una contraseña" required>
+					<label>Confirmar contraseña</label>
+					<input type="password" name="password2" placeholder="Repita la contraseña" required>
+					<button type="submit" class="btn-login">REGISTRARSE</button>
+				</form>
+				<p class="signup-text">¿Ya tienes cuenta? <a id="goLogin" href="#">Iniciar sesión</a></p>
+			</div>
+		</div>
+		{% endif %}
+
+<div id="acercaPopup" class="popup">
+    <div class="popup-content" style="max-width:500px; text-align:left; max-height:80vh; overflow-y:auto;">
+        <span class="close-acerca" style="position:absolute; top:8px; right:18px; font-size:28px; cursor:pointer;">&times;</span>
+        <<h2 style="text-align:center;">☕ Acerca de Nosotros</h2>
+        <p style="margin-top:15px;"><strong>Bienvenido a Cafe Hallyu Letters</strong></p>
+        <p style="margin-top:10px;">Mas que una cafeteria, somos un espacio pensado para compartir momentos, crear recuerdos y disfrutar de cada instante.</p>
+        <p style="margin-top:10px;">Creemos que las mejores conversaciones nacen alrededor de una buena mesa, por eso ofrecemos un ambiente acogedor donde cada visita se convierte en una experiencia especial.</p>
+        <p style="margin-top:10px;">Desde desayunos para empezar el dia con energia hasta postres para celebrar pequenos momentos, nuestro proposito es que siempre encuentres un motivo para volver.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🌿 Nuestra esencia</strong></p>
+        <p>Ingredientes frescos y de calidad.<br>Un ambiente calido para compartir con familia y amigos.<br>Sabores preparados con dedicacion en cada detalle.<br>Un lugar donde cada visita se convierte en un recuerdo.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>❤️ Nuestra filosofía</strong></p>
+        <p>Carpe Diem nos inspira a disfrutar el presente. Creemos que la felicidad se encuentra en los pequenos momentos: una conversacion, una sonrisa, un desayuno compartido o un postre despues de un largo dia.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🌸 ¿Qué encontrarás aquí?</strong></p>
+        <p>Bebidas artesanales<br>Desayunos preparados al momento<br>Postres y panes recien horneados<br>Opciones para toda la familia<br>Un espacio comodo para reunirte, estudiar o simplemente relajarte</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>✨ Nuestro compromiso</strong></p>
+        <p>Queremos que cada persona que nos visite se sienta bienvenida, disfrute de un excelente servicio y encuentre un lugar donde siempre quiera regresar.</p>
+    </div>
+</div>
+
+<div id="deliveryPopup" class="popup">
+    <div class="popup-content" style="max-width:500px; text-align:left; max-height:80vh; overflow-y:auto;">
+        <span class="close-delivery" style="position:absolute; top:8px; right:18px; font-size:28px; cursor:pointer;">&times;</span>
+        <h2 style="text-align:center;">🚚 Información de Delivery</h2>
+        <p style="margin-top:15px;">Llevamos tus sabores favoritos hasta tu puerta. Trabajamos para que tu pedido llegue en las mejores condiciones, conservando su calidad y frescura.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>⏱️ Tiempo estimado de entrega</strong></p>
+        <p>Zona cercana: 20-30 minutos<br>Zona media: 30-45 minutos<br>Zona lejana: 45-60 minutos</p>
+        <p style="margin-top:10px; font-size:13px; color:#777;">Los tiempos pueden variar segun el clima, el trafico o la demanda del momento.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>📦 Cobertura</strong></p>
+        <p>Realizamos entregas dentro de la ciudad y sectores cercanos. Si tienes dudas sobre tu ubicacion, contactanos antes de realizar el pedido.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>💳 Métodos de pago</strong></p>
+        <p>Efectivo<br>Tarjeta de debito o credito<br>Transferencia bancaria</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🍰 Recomendaciones</strong></p>
+        <p>Verifica que tu direccion y numero de contacto sean correctos.<br>Revisa tu pedido al recibirlo.<br>Si surge algun inconveniente, comunicate con nosotros.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>❤️ Nuestro compromiso</strong></p>
+        <p>Cada pedido se prepara con dedicacion para que disfrutes de la misma calidad y sabor que vivirias al visitarnos.</p>
+    </div>
+</div>
+<div id="privacidadPopup" class="popup">
+    <div class="popup-content" style="max-width:500px; text-align:left; max-height:80vh; overflow-y:auto;">
+        <span class="close-privacidad" style="position:absolute; top:8px; right:18px; font-size:28px; cursor:pointer;">&times;</span>
+        <h2 style="text-align:center;">🔒 Politicas de Privacidad</h2>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>📋 Informacion que recopilamos</strong></p>
+        <p>Recopilamos tu nombre, correo electronico, telefono y direccion unicamente para procesar tus pedidos y mejorar tu experiencia.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🛡️ Uso de tu informacion</strong></p>
+        <p>Tus datos se usan exclusivamente para gestionar tus compras, enviarte confirmaciones de pedido y brindarte soporte al cliente.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🔐 Proteccion de datos</strong></p>
+        <p>No compartimos ni vendemos tu informacion personal a terceros. Tus datos estan protegidos y solo son accesibles por nuestro equipo autorizado.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>❤️ Tu confianza es importante</strong></p>
+        <p>Nos comprometemos a mantener la confidencialidad de tu informacion en todo momento.</p>
+    </div>
+</div>
+
+<div id="terminosPopup" class="popup">
+    <div class="popup-content" style="max-width:500px; text-align:left; max-height:80vh; overflow-y:auto;">
+        <span class="close-terminos" style="position:absolute; top:8px; right:18px; font-size:28px; cursor:pointer;">&times;</span>
+        <h2 style="text-align:center;">📜 Terminos y Condiciones</h2>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🛒 Uso del servicio</strong></p>
+        <p>Al realizar un pedido en Cafe Hallyu Letters, aceptas que la informacion proporcionada es correcta y que el pedido se realizara segun disponibilidad de productos.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>💰 Precios y pagos</strong></p>
+        <p>Los precios estan sujetos a cambios sin previo aviso. Aceptamos pago en efectivo, tarjeta o transferencia bancaria.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🚚 Entregas</strong></p>
+        <p>Los tiempos de entrega son estimados y pueden variar segun la zona y disponibilidad.</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>↩️ Cambios y devoluciones</strong></p>
+        <p>Si tu pedido llega con algun inconveniente, contactanos dentro de las primeras 24 horas para resolverlo.</p>
+    </div>
+</div>
+
+<div id="contactanosPopup" class="popup">
+    <div class="popup-content" style="max-width:500px; text-align:left; max-height:80vh; overflow-y:auto;">
+        <span class="close-contactanos" style="position:absolute; top:8px; right:18px; font-size:28px; cursor:pointer;">&times;</span>
+        <h2 style="text-align:center;">📞 Contactanos</h2>
+        <p style="margin-top:15px; text-align:center;">Estamos disponibles para ayudarte con cualquier duda o pedido especial.</p>
+        <p style="margin-top:20px; color:var(--primary-color);"><strong>📱 Telefono</strong></p>
+        <p>119-912-2110</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>📧 Correo electronico</strong></p>
+        <p>aleluya@gmail.com</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>📍 Direccion</strong></p>
+        <p>Avenida Guayaquil, Callejon Maria</p>
+        <p style="margin-top:15px; color:var(--primary-color);"><strong>🕒 Horario de atencion</strong></p>
+        <p>Lunes a Viernes: 9:00 am - 17:00 pm</p>
+    </div>
+</div>
+
+
+		<div class="container-navbar">
+			<nav class="navbar container">
+				<ion-icon name="menu-outline" id="btn-menu"></ion-icon>
+				<ul class="menu" id="navMenu">
+					<li><a href="{% url 'tienda_index' %}">Inicio</a></li>
+					<li><a href="{% url 'tienda_cafe' %}">Café</a></li>
+					<li><a href="{% url 'tienda_desayuno' %}">Desayuno</a></li>
+					<li><a href="{% url 'tienda_postre' %}">Postre</a></li>
+					<a href="{% url 'tienda_categoria' 'Combos' %}">Promociones</a>
+					<li><a href="#informacion">Más</a></li>
+				</ul>
+				
+			</nav>
+		</div>
+	</header>
+
+	{% block content %}{% endblock %}
+
+	<footer id="informacion" class="footer">
+			<div class="container container-footer">
+				<div class="menu-footer">
+					<div class="contact-info">
+						<p class="title-footer">Información de Contacto</p>
+						<ul>
+							{% if negocio.direccion %}
+								<li><strong>Dirección:</strong> {{ negocio.direccion }}</li>
+							{% endif %}
+							{% if negocio.horario %}
+								<li><strong>Horario:</strong> {{ negocio.horario }}</li>
+							{% endif %}
+							{% if negocio.telefono %}
+								<li><strong>Teléfono:</strong> {{ negocio.telefono }}</li>
+							{% endif %}
+							{% if negocio.email %}
+								<li><strong>Email:</strong> {{ negocio.email }}</li>
+							{% endif %}
+						</ul>
+						<div class="social-icons">
+							{% if negocio.facebook %}
+								<a href="{{ negocio.facebook }}" target="_blank" class="facebook"><ion-icon name="logo-facebook"></ion-icon></a>
+							{% endif %}
+							{% if negocio.youtube %}
+								<a href="{{ negocio.youtube }}" target="_blank" class="youtube"><ion-icon name="logo-youtube"></ion-icon></a>
+							{% endif %}
+							{% if negocio.tiktok %}
+								<a href="{{ negocio.tiktok }}" target="_blank" class="tiktok"><ion-icon name="logo-tiktok"></ion-icon></a>
+							{% endif %}
+							{% if negocio.pinterest %}
+								<a href="{{ negocio.pinterest }}" target="_blank" class="pinterest"><ion-icon name="logo-pinterest"></ion-icon></a>
+							{% endif %}
+							{% if negocio.instagram %}
+								<a href="{{ negocio.instagram }}" target="_blank" class="instagram"><ion-icon name="logo-instagram"></ion-icon></a>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="information">
+						<p class="title-footer">Información</p>
+						<ul>
+							<li><a href="#" onclick="document.getElementById('acercaPopup').classList.add('active'); return false;">Acerca de Nosotros</a></li>
+							<li><a href="#" onclick="document.getElementById('deliveryPopup').classList.add('active'); return false;">Información Delivery</a></li>
+							<li><a href="#" onclick="document.getElementById('privacidadPopup').classList.add('active'); return false;">Políticas de Privacidad</a></li>
+							<li><a href="#" onclick="document.getElementById('terminosPopup').classList.add('active'); return false;">Términos y condiciones</a></li>
+							<li><a href="#" onclick="document.getElementById('contactanosPopup').classList.add('active'); return false;">Contáctanos</a></li>
+						</ul>
+					</div>
+
+					<div class="my-account">
+						<p class="title-footer">Mi cuenta</p>
+						<ul>
+							{% if user.is_authenticated %}
+								<li><a href="{% url 'mi_cuenta' %}">Mi cuenta</a></li>
+							{% else %}
+								<li><a href="#" onclick="document.getElementById('loginPopup').classList.add('active'); return false;">Mi cuenta</a></li>
+							{% endif %}
+							<li><a href="{% url 'mi_cuenta' %}">Historial de órdenes</a></li>
+
+							<li><a href="#">Boletín</a></li>
+							<li><a href="#">Reembolsos</a></li>
+						</ul>
+					</div>
+
+					<div class="newsletter">
+    					<p class="title-footer">Boletín informativo</p>
+    					<div class="content">
+        					<p>Suscríbete a nuestros boletines ahora y mantente al día con nuevas colecciones y ofertas exclusivas.</p>
+        					<input type="email" placeholder="Ingresa el correo aquí...">
+							<form action="{% url 'login' %}" method="get" style="display:inline;">
+            					<button type="submit">Suscríbete</button>
+    					</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+
+	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+	<script src="{% static 'tienda/script.js' %}"></script>
+	<script src="{% static 'tienda/carrito.js' %}"></script>
+
+	<script>
+	document.addEventListener('click', function(e){
+    	if(e.target.closest('.btn-like')){
+        	const btn = e.target.closest('.btn-like');
+        	const icon = btn.querySelector('i');
+        	const id = btn.getAttribute('data-blog-id');
+        	const likes = JSON.parse(localStorage.getItem('blogLikes') || '{}');
+        	if(likes[id]){
+            	delete likes[id];
+            	icon.classList.remove('fa-solid');
+            	icon.classList.add('fa-regular');
+            	icon.style.color = '';
+       		} else {
+            	likes[id] = true;
+            	icon.classList.remove('fa-regular');
+            	icon.classList.add('fa-solid');
+            	icon.style.color = '#e74c3c';
+        }
+        localStorage.setItem('blogLikes', JSON.stringify(likes));
+    }
+});
+document.addEventListener('DOMContentLoaded', function(){
+    const likes = JSON.parse(localStorage.getItem('blogLikes') || '{}');
+    document.querySelectorAll('.btn-like').forEach(function(btn){
+        const id = btn.getAttribute('data-blog-id');
+        if(likes[id]){
+            const icon = btn.querySelector('i');
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid');
+            icon.style.color = '#e74c3c';
+        }
+    });
+});
+
+document.addEventListener('click', function(e){
+    if(e.target.classList.contains('close-acerca')){
+        document.getElementById('acercaPopup').classList.remove('active');
+    }
+    if(e.target.classList.contains('close-delivery')){
+        document.getElementById('deliveryPopup').classList.remove('active');
+    }
+    if(e.target.id === 'acercaPopup'){
+        e.target.classList.remove('active');
+    }
+    if(e.target.id === 'deliveryPopup'){
+        e.target.classList.remove('active');
+    }
+	if(e.target.classList.contains('close-privacidad')){
+        document.getElementById('privacidadPopup').classList.remove('active');
+    }
+    if(e.target.classList.contains('close-terminos')){
+        document.getElementById('terminosPopup').classList.remove('active');
+    }
+    if(e.target.classList.contains('close-contactanos')){
+        document.getElementById('contactanosPopup').classList.remove('active');
+    }
+    if(e.target.id === 'privacidadPopup'){
+        e.target.classList.remove('active');
+    }
+    if(e.target.id === 'terminosPopup'){
+        e.target.classList.remove('active');
+    }
+    if(e.target.id === 'contactanosPopup'){
+        e.target.classList.remove('active');
+    }
+});
+</script>
+
+
+
+
+
+{% block extra_js %}{% endblock %}
+</body>
+
+</html>

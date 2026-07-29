@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <h1 class="m-0" style="color:#6f4e37;">🧾 Pedidos</h1>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="card mb-4" style="border-radius:16px; border:none; box-shadow:0 6px 18px rgba(111,78,55,0.1);">
+      <div class="card-body">
+        <h5 style="color:#6f4e37;">Nuevo pedido</h5>
+        <form method="post" class="form-row align-items-end">
+          {% csrf_token %}
+          <div class="col-md-6 mb-2">
+            <label>Producto</label>
+            <select name="producto" class="form-control" required>
+              {% for producto in productos %}
+                <option value="{{ producto.pk }}">{{ producto.nombre }} (Stock: {{ producto.stock }}) - ${{ producto.precio }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3 mb-2">
+            <label>Cantidad</label>
+            <input type="number" name="cantidad" class="form-control" value="1" min="1" required>
+          </div>
+          <div class="col-md-3 mb-2">
+            <button type="submit" class="btn btn-block" style="background:#6f4e37; color:#fff; border-radius:20px;">Crear pedido</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" style="border-radius:16px; border:none; box-shadow:0 6px 18px rgba(111,78,55,0.1);">
+      <div class="card-body">
+        <h5 style="color:#6f4e37;">Historial de pedidos</h5>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Usuario</th>
+              <th>Productos</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pedido in pedidos %}
+            <tr>
+              <td>{{ pedido.id }}</td>
+              <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+              <td>{{ pedido.usuario.first_name|default:pedido.usuario.username }}</td>
+              <td>
+                {% for item in pedido.items.all %}
+                  {{ item.cantidad }}x {{ item.producto.nombre }}<br>
+                {% endfor %}
+              </td>
+              <td>${{ pedido.total }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-muted">Todavía no hay pedidos.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

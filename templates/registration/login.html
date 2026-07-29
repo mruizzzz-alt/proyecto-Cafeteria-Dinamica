@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión | Café Hallyu Letters</title>
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <style>
+  *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+  }
+  body{
+      min-height:100vh;
+      background:
+      linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),
+      url("{% static 'img/banner.jpg' %}");
+      background-size:cover;
+      background-position:center;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+  }
+  .login-card{
+      width:430px;
+      background:rgba(255,255,255,.95);
+      border-radius:20px;
+      padding:45px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .logo{
+      text-align:center;
+      margin-bottom:30px;
+  }
+  .logo h1{
+      font-size:38px;
+      font-weight:800;
+      color:#111;
+  }
+  .logo span{
+      color:#c97d52;
+  }
+  .logo p{
+      color:#777;
+      margin-top:10px;
+  }
+  .form-control{
+      height:50px;
+      border-radius:30px;
+  }
+  .input-group-text{
+      border-radius:30px 0 0 30px;
+      background:#c97d52;
+      color:#fff;
+      border:none;
+  }
+  .form-control{
+
+      border-radius:0 30px 30px 0;
+      border:1px solid #ddd;
+  }
+  .form-control:focus{
+      box-shadow:none;
+      border-color:#c97d52;
+  }
+  .btn-login{
+      background:#c97d52;
+      color:white;
+      border:none;
+      border-radius:30px;
+      padding:12px;
+      font-weight:bold;
+      transition:.3s;
+  }
+  .btn-login:hover{
+      background:#9f5e3b;
+      color:white;
+  }
+  .links{
+      text-align:center;
+      margin-top:20px;
+  }
+
+  .links a{
+      color:#c97d52;
+      font-weight:600;
+
+  }
+
+  .alert{
+      border-radius:15px;
+
+  }
+
+  </style>
+
+</head>
+
+<body>
+  <div class="login-card">
+    <div class="logo">
+      <h1><i class="fas fa-mug-hot"></i> CAFÉ <span>HALLYU</span></h1>
+      <p>Bienvenido nuevamente</p>
+    </div>
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        Correo o contraseña incorrectos.
+      </div>
+    {% endif %}
+    
+    <form method="post">
+      {% csrf_token %}
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fas fa-envelope"></i>
+            </span>
+          </div>
+          <input type="email" name="username" class="form-control" placeholder="Correo electrónico" required>
+        </div>
+          <div class="input-group mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+            <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+          </div>
+          <button class="btn btn-login btn-block"> <i class="fas fa-sign-in-alt"></i> Iniciar sesión </button>
+    </form>
+    <div class="links">
+      <p>
+        <a href="{% url 'password_reset' %}"> ¿Olvidaste tu contraseña? </a>
+      </p>
+      <p> ¿No tienes cuenta? <a href="{% url 'registro' %}"> Crear cuenta </a> </p>
+    </div>
+  </div>
+
+</body>
+
+</html>

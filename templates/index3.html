@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Clientes</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right cafe-breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Clientes</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content_header %}
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+
+    <div class="row mb-3">
+      <div class="col-md-4 col-6">
+        <div class="info-box cafe-info-box">
+          <span class="info-box-icon bg-cafe"><i class="fas fa-users"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Clientes registrados</span>
+            <span class="info-box-number">{{ clientes|length }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card cafe-card cafe-card-flush">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="cafe-card-title">Lista de clientes</h5>
+        <div class="input-group cafe-search-group">
+          <input type="text" id="buscadorClientes" class="form-control" placeholder="Buscar cliente...">
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 cafe-table" id="tablaClientes">
+            <thead>
+              <tr>
+                <th style="width: 60px;"></th>
+                <th>Cliente</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th class="text-center">Pedidos</th>
+                <th class="text-right">Total gastado</th>
+                <th>Último pedido</th>
+                <th class="text-center">Historial</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in clientes %}
+              <tr>
+                <td>
+                  {% if c.user.profile and c.user.profile.photo %}
+                    <img src="{{ c.user.profile.photo.url }}" class="cafe-avatar-sm">
+                  {% else %}
+                    <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="cafe-avatar-sm">
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="cafe-cliente-nombre">{{ c.user.first_name|default:c.user.username }} {{ c.user.last_name }}</div>
+                  <div class="cafe-text-muted cafe-username-tag">@{{ c.user.username }}</div>
+                </td>
+                <td>{{ c.user.profile.phone|default:"—" }}</td>
+                <td>{{ c.user.email|default:"—" }}</td>
+                <td class="text-center">
+                  <span class="badge badge-cafe-count">{{ c.total_pedidos }}</span>
+                </td>
+                <td class="text-right cafe-money">${{ c.total_gastado|floatformat:2 }}</td>
+                <td>
+                  {% if c.ultimo_pedido %}
+                    {{ c.ultimo_pedido|date:"d/m/Y H:i" }}
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-cafe" data-toggle="modal" data-target="#modalHistorial{{ c.user.id }}">
+                    <i class="fas fa-receipt"></i>
+                  </button>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="8" class="text-center py-4 cafe-text-muted">Aún no hay clientes con pedidos registrados.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% for c in clientes %}
+<div class="modal fade" id="modalHistorial{{ c.user.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content cafe-modal">
+      <div class="modal-header cafe-modal-header">
+        <h5 class="modal-title">Historial de compras — {{ c.user.first_name|default:c.user.username }}</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="accordion" id="acordeonPedidos{{ c.user.id }}">
+          {% for pedido in c.pedidos %}
+          <div class="card cafe-card mb-2">
+            <div class="card-header cafe-accordion-header p-2" data-toggle="collapse" data-target="#pedidoDetalle{{ c.user.id }}_{{ pedido.id }}">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>#{{ pedido.id }}</strong>
+                  <span class="cafe-text-muted ml-2">{{ pedido.fecha|date:"d/m/Y H:i" }}</span>
+                  <span class="badge badge-cafe-historial ml-2">{{ pedido.get_estado_display }}</span>
+                </div>
+                <div>
+                  <strong class="cafe-money">${{ pedido.total }}</strong>
+                  <i class="fas fa-chevron-down ml-2 cafe-icon-muted"></i>
+                </div>
+              </div>
+            </div>
+            <div id="pedidoDetalle{{ c.user.id }}_{{ pedido.id }}" class="collapse">
+              <div class="card-body p-2">
+                <table class="table table-sm mb-0 cafe-table">
+                  <thead>
+                    <tr><th>Producto</th><th class="text-center">Cant.</th><th class="text-right">Precio</th><th class="text-right">Subtotal</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for item in pedido.items.all %}
+                    <tr>
+                      <td>{{ item.producto.nombre }}</td>
+                      <td class="text-center">{{ item.cantidad }}</td>
+                      <td class="text-right">${{ item.precio_unitario }}</td>
+                      <td class="text-right">${{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-center cafe-text-muted">Sin compras registradas.</p>
+          {% endfor %}
+        </div>
+        <p class="text-right cafe-money cafe-total-historico">Total histórico: ${{ c.total_gastado|floatformat:2 }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
+{% block extra_js %}
+<script>
+  document.getElementById('buscadorClientes').addEventListener('keyup', function() {
+    const filtro = this.value.toLowerCase();
+    document.querySelectorAll('#tablaClientes tbody tr').forEach(function(fila) {
+      fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Perfil</title>
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+</head>
+<body class="hold-transition layout-top-nav">
+<div class="wrapper">
+
+  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+    <div class="container">
+      <a href="{% url 'index' %}" class="navbar-brand">
+        <span class="brand-text font-weight-light">MiProyecto</span>
+      </a>
+      <div class="collapse navbar-collapse order-3">
+        <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link nav-link" style="border:none;background:none;">Cerrar sesión</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container">
+        <h1 class="m-0">Mi Perfil</h1>
+      </div>
+    </div>
+
+    <section class="content">
+      <div class="container">
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  {% if profile.photo %}
+                    <img class="profile-user-img img-fluid img-circle" src="{{ profile.photo.url }}" alt="Foto de perfil">
+                  {% else %}
+                    <img class="profile-user-img img-fluid img-circle" src="{% static 'dist/img/user2-160x160.jpg' %}" alt="Foto de perfil">
+                  {% endif %}
+                </div>
+                <h3 class="profile-username text-center">{{ user.username }}</h3>
+                <p class="text-muted text-center">{{ user.email }}</p>
+
+                <a href="{% url 'password_change' %}" class="btn btn-secondary btn-block">
+                  <i class="fas fa-key"></i> Cambiar contraseña
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <div class="card card-primary card-outline">
+              <div class="card-header">
+                <h3 class="card-title">Editar información</h3>
+              </div>
+              <div class="card-body">
+               <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+                  </div>
+                  <div class="form-group">
+                    <label>Foto de perfil</label>
+                    <input type="file" name="photo" class="form-control">
+                  </div>
+
+
+                  <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" name="phone" class="form-control" value="{{ profile.phone }}">
+                  </div>
+                  <div class="form-group">
+                    <label>Biografía</label>
+                    <textarea name="bio" class="form-control" rows="4">{{ profile.bio }}</textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <footer class="main-footer">
+    <strong>MiProyecto</strong> &copy; 2026
+  </footer>
+</div>
+</body>
+</html>

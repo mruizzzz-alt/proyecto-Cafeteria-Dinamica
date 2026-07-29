@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <h1 class="m-0" style="color:#5a3826;">Eliminar Categoría</h1>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+    <div class="card" style="max-width:500px; border-radius:16px; border:none; box-shadow:0 6px 18px rgba(90,56,38,0.12);">
+      <div class="card-body">
+        <p>¿Seguro que quieres eliminar la categoría <strong>{{ categoria.nombre }}</strong>?</p>
+        {% if categoria.producto_set.count > 0 %}
+          <p class="text-danger"><i class="fas fa-exclamation-triangle"></i> Tiene {{ categoria.producto_set.count }} producto(s) asociado(s). Se quedarán sin categoría.</p>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger" style="border-radius:8px;">
+            <i class="fas fa-trash"></i> Sí, eliminar
+          </button>
+          <a href="{% url 'lista_categorias' %}" class="btn btn-outline-secondary" style="border-radius:8px;">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

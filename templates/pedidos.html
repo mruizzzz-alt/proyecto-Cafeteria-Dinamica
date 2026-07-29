@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0"><i class="fas fa-receipt mr-2 cafe-icon-accent"></i>Pedidos</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right cafe-breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'index' %}"><i class="fas fa-home"></i> Inicio</a></li>
+          <li class="breadcrumb-item active">Pedidos</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content_header %}
+
+{% block content %}
+<section class="content cafe-pedidos">
+  <div class="container-fluid">
+    <div class="card cafe-card card-outline card-tabs">
+      <div class="card-header p-0 pt-1 border-bottom-0">
+        <ul class="nav nav-tabs" id="pedidos-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="nuevos-tab" data-toggle="pill" href="#nuevos" role="tab">
+              <i class="fas fa-bell mr-1"></i>Nuevos <span class="badge badge-cafe-nuevo">{{ pedidos_nuevos|length }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="preparacion-tab" data-toggle="pill" href="#preparacion" role="tab">
+              <i class="fas fa-utensils mr-1"></i>En preparación <span class="badge badge-cafe-prep">{{ pedidos_preparacion|length }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="listos-tab" data-toggle="pill" href="#listos" role="tab">
+              <i class="fas fa-check-circle mr-1"></i>Listos <span class="badge badge-cafe-listo">{{ pedidos_listos|length }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="entregados-tab" data-toggle="pill" href="#entregados" role="tab">
+              <i class="fas fa-truck mr-1"></i>Entregados <span class="badge badge-cafe-entregado">{{ pedidos_entregados|length }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="historial-tab" data-toggle="pill" href="#historial" role="tab">
+              <i class="fas fa-history mr-1"></i>Historial <span class="badge badge-cafe-historial">{{ pedidos_historial|length }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <div class="tab-content" id="pedidos-tabsContent">
+
+          <div class="tab-pane fade show active" id="nuevos" role="tabpanel">
+            <table class="table table-striped cafe-table">
+              <thead>
+                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+              </thead>
+              <tbody>
+                {% for pedido in pedidos_nuevos %}
+                <tr>
+                  <td>#{{ pedido.id }}</td>
+                  <td>{{ pedido.usuario.username }}</td>
+                  <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+                  <td class="text-right total-col">${{ pedido.total }}</td>
+                  <td>
+                    <form method="post" action="{% url 'cambiar_estado_pedido' pedido.id %}">
+                      {% csrf_token %}
+                      <select name="estado" class="form-control form-control-sm estado-select" onchange="this.form.submit()">
+                        <option value="nuevo" selected>Nuevo</option>
+                        <option value="preparacion">En preparación</option>
+                        <option value="listo">Listo</option>
+                        <option value="entregado">Entregado</option>
+                      </select>
+                    </form>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-cafe" data-toggle="modal" data-target="#modalN{{ pedido.id }}">
+                      <i class="fas fa-eye"></i> Ver
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos nuevos.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane fade" id="preparacion" role="tabpanel">
+            <table class="table table-striped cafe-table">
+              <thead>
+                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+              </thead>
+              <tbody>
+                {% for pedido in pedidos_preparacion %}
+                <tr>
+                  <td>#{{ pedido.id }}</td>
+                  <td>{{ pedido.usuario.username }}</td>
+                  <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+                  <td class="text-right total-col">${{ pedido.total }}</td>
+                  <td>
+                    <form method="post" action="{% url 'cambiar_estado_pedido' pedido.id %}">
+                      {% csrf_token %}
+                      <select name="estado" class="form-control form-control-sm estado-select" onchange="this.form.submit()">
+                        <option value="nuevo">Nuevo</option>
+                        <option value="preparacion" selected>En preparación</option>
+                        <option value="listo">Listo</option>
+                        <option value="entregado">Entregado</option>
+                      </select>
+                    </form>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-cafe" data-toggle="modal" data-target="#modalP{{ pedido.id }}">
+                      <i class="fas fa-eye"></i> Ver
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos en preparación.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane fade" id="listos" role="tabpanel">
+            <table class="table table-striped cafe-table">
+              <thead>
+                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+              </thead>
+              <tbody>
+                {% for pedido in pedidos_listos %}
+                <tr>
+                  <td>#{{ pedido.id }}</td>
+                  <td>{{ pedido.usuario.username }}</td>
+                  <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+                  <td class="text-right total-col">${{ pedido.total }}</td>
+                  <td>
+                    <form method="post" action="{% url 'cambiar_estado_pedido' pedido.id %}">
+                      {% csrf_token %}
+                      <select name="estado" class="form-control form-control-sm estado-select" onchange="this.form.submit()">
+                        <option value="nuevo">Nuevo</option>
+                        <option value="preparacion">En preparación</option>
+                        <option value="listo" selected>Listo</option>
+                        <option value="entregado">Entregado</option>
+                      </select>
+                    </form>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-cafe" data-toggle="modal" data-target="#modalL{{ pedido.id }}">
+                      <i class="fas fa-eye"></i> Ver
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos listos.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane fade" id="entregados" role="tabpanel">
+            <table class="table table-striped cafe-table">
+              <thead>
+                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+              </thead>
+              <tbody>
+                {% for pedido in pedidos_entregados %}
+                <tr>
+                  <td>#{{ pedido.id }}</td>
+                  <td>{{ pedido.usuario.username }}</td>
+                  <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+                  <td class="text-right total-col">${{ pedido.total }}</td>
+                  <td>
+                    <form method="post" action="{% url 'cambiar_estado_pedido' pedido.id %}">
+                      {% csrf_token %}
+                      <select name="estado" class="form-control form-control-sm estado-select" onchange="this.form.submit()">
+                        <option value="nuevo">Nuevo</option>
+                        <option value="preparacion">En preparación</option>
+                        <option value="listo">Listo</option>
+                        <option value="entregado" selected>Entregado</option>
+                      </select>
+                    </form>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-cafe" data-toggle="modal" data-target="#modalE{{ pedido.id }}">
+                      <i class="fas fa-eye"></i> Ver
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos entregados.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane fade" id="historial" role="tabpanel">
+            <table class="table table-striped cafe-table">
+              <thead>
+                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+              </thead>
+              <tbody>
+                {% for pedido in pedidos_historial %}
+                <tr>
+                  <td>#{{ pedido.id }}</td>
+                  <td>{{ pedido.usuario.username }}</td>
+                  <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+                  <td class="text-right total-col">${{ pedido.total }}</td>
+                  <td><span class="badge badge-cafe-historial">{{ pedido.get_estado_display }}</span></td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-cafe" data-toggle="modal" data-target="#modalH{{ pedido.id }}">
+                      <i class="fas fa-eye"></i> Ver
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>Aún no hay pedidos.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% for pedido in pedidos_historial %}
+<div class="modal fade" id="modalN{{ pedido.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content cafe-modal">
+      <div class="modal-header cafe-modal-header">
+        <h5 class="modal-title"><i class="fas fa-receipt mr-2"></i>Pedido #{{ pedido.id }}</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
+        <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <table class="table table-sm cafe-table">
+          <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            {% for item in pedido.items.all %}
+            <tr>
+              <td>{{ item.producto.nombre }}</td>
+              <td>{{ item.cantidad }}</td>
+              <td>${{ item.precio_unitario }}</td>
+              <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="text-right mb-0"><strong>Total: ${{ pedido.total }}</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalP{{ pedido.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content cafe-modal">
+      <div class="modal-header cafe-modal-header">
+        <h5 class="modal-title"><i class="fas fa-receipt mr-2"></i>Pedido #{{ pedido.id }}</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
+        <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <table class="table table-sm cafe-table">
+          <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            {% for item in pedido.items.all %}
+            <tr>
+              <td>{{ item.producto.nombre }}</td>
+              <td>{{ item.cantidad }}</td>
+              <td>${{ item.precio_unitario }}</td>
+              <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="text-right mb-0"><strong>Total: ${{ pedido.total }}</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalL{{ pedido.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content cafe-modal">
+      <div class="modal-header cafe-modal-header">
+        <h5 class="modal-title"><i class="fas fa-receipt mr-2"></i>Pedido #{{ pedido.id }}</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
+        <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <table class="table table-sm cafe-table">
+          <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            {% for item in pedido.items.all %}
+            <tr>
+              <td>{{ item.producto.nombre }}</td>
+              <td>{{ item.cantidad }}</td>
+              <td>${{ item.precio_unitario }}</td>
+              <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="text-right mb-0"><strong>Total: ${{ pedido.total }}</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalE{{ pedido.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content cafe-modal">
+      <div class="modal-header cafe-modal-header">
+        <h5 class="modal-title"><i class="fas fa-receipt mr-2"></i>Pedido #{{ pedido.id }}</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
+        <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <table class="table table-sm cafe-table">
+          <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            {% for item in pedido.items.all %}
+            <tr>
+              <td>{{ item.producto.nombre }}</td>
+              <td>{{ item.cantidad }}</td>
+              <td>${{ item.precio_unitario }}</td>
+              <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="text-right mb-0"><strong>Total: ${{ pedido.total }}</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalH{{ pedido.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content cafe-modal">
+      <div class="modal-header cafe-modal-header">
+        <h5 class="modal-title"><i class="fas fa-receipt mr-2"></i>Pedido #{{ pedido.id }}</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
+        <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <table class="table table-sm cafe-table">
+          <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            {% for item in pedido.items.all %}
+            <tr>
+              <td>{{ item.producto.nombre }}</td>
+              <td>{{ item.cantidad }}</td>
+              <td>${{ item.precio_unitario }}</td>
+              <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="text-right mb-0"><strong>Total: ${{ pedido.total }}</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

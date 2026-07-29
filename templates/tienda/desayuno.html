@@ -1,0 +1,35 @@
+{% extends "tienda/tienda_base.html" %}
+{% load static %}
+{% block title %}Desayuno - Café Hallyu Letters{% endblock %}
+
+{% block content %}
+<nav class="container-navbar-breadcrumb">
+    <ul class="container-cafe">
+        <li><h3>Desayuno</h3></li>
+    </ul>
+</nav>
+
+<div class="cafe-container" id="lista-1">
+    <div class="cafe-content">
+        {% for producto in productos %}
+        <div class="product">
+            {% if producto.foto %}
+                <img src="{{ producto.foto.url }}" alt="{{ producto.nombre }}">
+            {% else %}
+                <img src="{% static 'tienda/imagenes/default-producto.jpg' %}" alt="{{ producto.nombre }}">
+            {% endif %}
+            <div class="cafe-text">
+                <h3>{{ producto.nombre }}</h3>
+                <p class="precio">${{ producto.precio }}</p>
+                <a href="#" class="agregar-carrito btn-2"
+                   data-id="{{ producto.id }}"
+                   data-nombre="{{ producto.nombre }}"
+                   data-precio="{{ producto.precio }}">Comprar</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Todavía no hay productos de desayuno disponibles.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

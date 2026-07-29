@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1 class="m-0" style="color:#6f4e37;">Inventario de Productos</h1>
+      <a href="{% url 'agregar_producto' %}" class="btn" style="background:#6f4e37; color:#fff; border-radius:20px;">
+        <i class="fas fa-plus"></i> Agregar producto
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row">
+      {% for producto in productos %}
+      <div class="col-md-3 mb-4">
+        <div class="card" style="border-radius:16px; border:none; box-shadow:0 6px 18px rgba(111,78,55,0.12); overflow:hidden;">
+          {% if producto.foto %}
+            <img src="{{ producto.foto.url }}" class="card-img-top" style="height:160px; object-fit:cover;">
+          {% else %}
+            <img src="{% static 'dist/img/AdminLTELogo.png' %}" class="card-img-top" style="height:160px; object-fit:contain; padding:20px; background:#f1e4d8;">
+          {% endif %}
+          <div class="card-body">
+            <span style="background:#e8b4a0; color:#5a3826; border-radius:20px; padding:4px 12px; font-size:0.75rem; font-weight:600;">{{ producto.categoria.nombre|default:'Sin categoría' }}</span>
+            <h5 class="mt-2 mb-1">{{ producto.nombre }}</h5>
+            <p class="mb-1" style="color:#6f4e37; font-weight:700; font-size:1.1rem;">${{ producto.precio }}</p>
+            <p class="mb-2 {% if producto.stock < 5 %}text-danger font-weight-bold{% endif %}">
+              Stock: {{ producto.stock }}
+              {% if producto.stock < 5 %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+            </p>
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'editar_producto' producto.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+              <a href="{% url 'eliminar_producto' producto.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar este producto?')">Eliminar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-muted">Todavía no hay productos en el inventario. ¡Agregá el primero!</p>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

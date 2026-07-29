@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1 class="m-0 cafe-page-title">Blogs</h1>
+      <a href="{% url 'agregar_blog' %}" class="btn btn-cafe-pill">
+        <i class="fas fa-plus"></i> Agregar blog
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row">
+      {% for blog in blogs %}
+      <div class="col-md-4 mb-4">
+        <div class="card cafe-blog-card">
+          {% if blog.imagen %}
+            <img src="{{ blog.imagen.url }}" class="card-img-top cafe-blog-img">
+          {% endif %}
+          <div class="card-body">
+            <span class="cafe-text-muted cafe-blog-fecha">{{ blog.fecha|date:"d/m/Y" }}</span>
+            <h5 class="mt-1 cafe-blog-titulo">{{ blog.titulo }}</h5>
+            <p class="cafe-text-muted cafe-blog-resumen">{{ blog.resumen|truncatewords:15 }}</p>
+            <a href="{% url 'editar_blog' blog.id %}" class="btn btn-sm btn-cafe-outline">
+              <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="{% url 'eliminar_blog' blog.id %}" class="btn btn-sm btn-cafe-outline-danger">
+              <i class="fas fa-trash"></i> Eliminar
+            </a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-4 cafe-text-muted">Aún no hay blogs.</div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "tienda/tienda_base.html" %}
+{% load static %}
+{% block title %}{{ blog.titulo }} - Café Hallyu Letters{% endblock %}
+{% block content %}
+<div class="container blogs">
+    <h2 class="heading-1">{{ blog.titulo }}</h2>
+    <div class="content-blog">
+        <span>{{ blog.fecha|date:"F Y" }}</span>
+        {% if blog.imagen %}
+            <img src="{{ blog.imagen.url }}" alt="{{ blog.titulo }}">
+        {% endif %}
+        <p>{{ blog.contenido|linebreaks }}</p>
+        <div class="btn-read-more">
+            <a href="{% url 'tienda_index' %}">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
