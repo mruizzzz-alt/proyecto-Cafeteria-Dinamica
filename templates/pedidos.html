@@ -57,13 +57,14 @@
           <div class="tab-pane fade show active" id="nuevos" role="tabpanel">
             <table class="table table-striped cafe-table">
               <thead>
-                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+                <tr><th>#</th><th>Cliente</th><th>Código</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
               </thead>
               <tbody>
                 {% for pedido in pedidos_nuevos %}
                 <tr>
                   <td>#{{ pedido.id }}</td>
                   <td>{{ pedido.usuario.username }}</td>
+                  <td><span class="cafe-codigo">{{ pedido.codigo }}</span></td>
                   <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
                   <td class="text-right total-col">${{ pedido.total }}</td>
                   <td>
@@ -84,7 +85,7 @@
                   </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos nuevos.</td></tr>
+                <tr><td colspan="7" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos nuevos.</td></tr>
                 {% endfor %}
               </tbody>
             </table>
@@ -93,13 +94,14 @@
           <div class="tab-pane fade" id="preparacion" role="tabpanel">
             <table class="table table-striped cafe-table">
               <thead>
-                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+                <tr><th>#</th><th>Cliente</th><th>Código</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
               </thead>
               <tbody>
                 {% for pedido in pedidos_preparacion %}
                 <tr>
                   <td>#{{ pedido.id }}</td>
                   <td>{{ pedido.usuario.username }}</td>
+                  <td><span class="cafe-codigo">{{ pedido.codigo }}</span></td>
                   <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
                   <td class="text-right total-col">${{ pedido.total }}</td>
                   <td>
@@ -120,7 +122,7 @@
                   </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos en preparación.</td></tr>
+                <tr><td colspan="7" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos en preparación.</td></tr>
                 {% endfor %}
               </tbody>
             </table>
@@ -129,13 +131,14 @@
           <div class="tab-pane fade" id="listos" role="tabpanel">
             <table class="table table-striped cafe-table">
               <thead>
-                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+                <tr><th>#</th><th>Cliente</th><th>Código</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
               </thead>
               <tbody>
                 {% for pedido in pedidos_listos %}
                 <tr>
                   <td>#{{ pedido.id }}</td>
                   <td>{{ pedido.usuario.username }}</td>
+                  <td><span class="cafe-codigo">{{ pedido.codigo }}</span></td>
                   <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
                   <td class="text-right total-col">${{ pedido.total }}</td>
                   <td>
@@ -156,7 +159,7 @@
                   </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos listos.</td></tr>
+                <tr><td colspan="7" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos listos.</td></tr>
                 {% endfor %}
               </tbody>
             </table>
@@ -165,13 +168,14 @@
           <div class="tab-pane fade" id="entregados" role="tabpanel">
             <table class="table table-striped cafe-table">
               <thead>
-                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+                <tr><th>#</th><th>Cliente</th><th>Código</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
               </thead>
               <tbody>
                 {% for pedido in pedidos_entregados %}
                 <tr>
                   <td>#{{ pedido.id }}</td>
                   <td>{{ pedido.usuario.username }}</td>
+                  <td><span class="cafe-codigo">{{ pedido.codigo }}</span></td>
                   <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
                   <td class="text-right total-col">${{ pedido.total }}</td>
                   <td>
@@ -192,7 +196,7 @@
                   </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos entregados.</td></tr>
+                <tr><td colspan="7" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>No hay pedidos entregados.</td></tr>
                 {% endfor %}
               </tbody>
             </table>
@@ -201,13 +205,14 @@
           <div class="tab-pane fade" id="historial" role="tabpanel">
             <table class="table table-striped cafe-table">
               <thead>
-                <tr><th>#</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
+                <tr><th>#</th><th>Cliente</th><th>Código</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th><th class="text-center">Detalle</th></tr>
               </thead>
               <tbody>
                 {% for pedido in pedidos_historial %}
                 <tr>
                   <td>#{{ pedido.id }}</td>
                   <td>{{ pedido.usuario.username }}</td>
+                  <td><span class="cafe-codigo">{{ pedido.codigo }}</span></td>
                   <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
                   <td class="text-right total-col">${{ pedido.total }}</td>
                   <td><span class="badge badge-cafe-historial">{{ pedido.get_estado_display }}</span></td>
@@ -218,7 +223,7 @@
                   </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>Aún no hay pedidos.</td></tr>
+                <tr><td colspan="7" class="text-center empty-row"><i class="fas fa-inbox mr-1"></i>Aún no hay pedidos.</td></tr>
                 {% endfor %}
               </tbody>
             </table>
@@ -241,6 +246,10 @@
       <div class="modal-body">
         <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
         <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <div class="cafe-codigo-box">
+          <span class="cafe-codigo-label"><i class="fas fa-qrcode mr-1"></i>Código de verificación</span>
+          <span class="cafe-codigo-valor">{{ pedido.codigo }}</span>
+        </div>
         <table class="table table-sm cafe-table">
           <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
           <tbody>
@@ -269,6 +278,10 @@
       <div class="modal-body">
         <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
         <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <div class="cafe-codigo-box">
+          <span class="cafe-codigo-label"><i class="fas fa-qrcode mr-1"></i>Código de verificación</span>
+          <span class="cafe-codigo-valor">{{ pedido.codigo }}</span>
+        </div>
         <table class="table table-sm cafe-table">
           <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
           <tbody>
@@ -297,6 +310,10 @@
       <div class="modal-body">
         <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
         <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <div class="cafe-codigo-box">
+          <span class="cafe-codigo-label"><i class="fas fa-qrcode mr-1"></i>Código de verificación</span>
+          <span class="cafe-codigo-valor">{{ pedido.codigo }}</span>
+        </div>
         <table class="table table-sm cafe-table">
           <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
           <tbody>
@@ -325,6 +342,10 @@
       <div class="modal-body">
         <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
         <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <div class="cafe-codigo-box">
+          <span class="cafe-codigo-label"><i class="fas fa-qrcode mr-1"></i>Código de verificación</span>
+          <span class="cafe-codigo-valor">{{ pedido.codigo }}</span>
+        </div>
         <table class="table table-sm cafe-table">
           <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
           <tbody>
@@ -353,6 +374,10 @@
       <div class="modal-body">
         <p class="mb-1"><i class="fas fa-user mr-1 cafe-icon-muted"></i><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
         <p><i class="fas fa-clock mr-1 cafe-icon-muted"></i><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+        <div class="cafe-codigo-box">
+          <span class="cafe-codigo-label"><i class="fas fa-qrcode mr-1"></i>Código de verificación</span>
+          <span class="cafe-codigo-valor">{{ pedido.codigo }}</span>
+        </div>
         <table class="table table-sm cafe-table">
           <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
           <tbody>

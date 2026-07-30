@@ -38,6 +38,202 @@ function mostrarNotificacion(mensaje) {
     }, 2000);
 }
 
+/* ==========================================
+   MODAL DE CÓDIGO DE VERIFICACIÓN DEL PEDIDO
+   ========================================== */
+
+function inyectarEstilosModalCodigo() {
+    if (document.getElementById('estilos-modal-codigo')) return;
+    const style = document.createElement('style');
+    style.id = 'estilos-modal-codigo';
+    style.textContent = `
+        .modal-codigo-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(43, 33, 24, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .ticket-caja {
+            background: #FDFBF7;
+            border-radius: 10px;
+            max-width: 340px;
+            width: 100%;
+            padding: 24px 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            font-family: 'Courier New', monospace;
+            color: #2B2118;
+            max-height: 90vh;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .ticket-linea {
+            border: none;
+            border-top: 1px dashed #5A3826;
+            margin: 10px 0;
+        }
+        .ticket-negocio {
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--primary-color, #5A3826);
+            font-size: 0.95rem;
+        }
+        .ticket-pedido {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .ticket-label {
+            color: #8a7566;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .ticket-codigo-label {
+            text-align: center;
+            color: #8a7566;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-top: 6px;
+        }
+        .ticket-codigo-valor {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 0.1em;
+            color: var(--primary-color, #5A3826);
+            margin: 4px 0 6px;
+        }
+        .ticket-bloque {
+            margin: 10px 0;
+        }
+        .ticket-titulo-seccion {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .ticket-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .ticket-total-fila {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin: 4px 0;
+        }
+        .ticket-pie {
+            text-align: center;
+            font-size: 0.78rem;
+            margin-top: 4px;
+        }
+        .ticket-pie-codigo {
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            font-size: 1rem;
+            margin: 8px 0 4px;
+            color: var(--primary-color, #5A3826);
+        }
+        .ticket-cerrar {
+            display: block;
+            width: 100%;
+            background: var(--primary-color, #5A3826);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 11px 0;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
+            margin-top: 14px;
+        }
+        .ticket-cerrar:hover {
+            opacity: 0.9;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function mostrarCodigoPedido(data) {
+    inyectarEstilosModalCodigo();
+
+    const existente = document.getElementById('modal-codigo-overlay');
+    if (existente) existente.remove();
+
+    const filas = (data.items || []).map(item => {
+        const izquierda = `${item.cantidad} x ${item.nombre}`;
+        return `<div class="ticket-item"><span>${izquierda}</span><span>$${item.subtotal.toFixed(2)}</span></div>`;
+    }).join('');
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-codigo-overlay';
+    overlay.id = 'modal-codigo-overlay';
+    overlay.innerHTML = `
+        <div class="ticket-caja">
+            <div class="ticket-negocio">CAFÉ HALLYU LETTERS</div>
+            <hr class="ticket-linea">
+
+            <div class="ticket-pedido">Pedido #${data.pedido_id}</div>
+
+            <div class="ticket-codigo-label">Código de retiro</div>
+            <div class="ticket-codigo-valor">${data.codigo}</div>
+
+            <hr class="ticket-linea">
+
+            <div class="ticket-bloque">
+                <div class="ticket-label">Cliente</div>
+                <div>${data.cliente}</div>
+            </div>
+            <div class="ticket-bloque">
+                <div class="ticket-label">Fecha</div>
+                <div>${data.fecha} &nbsp; ${data.hora}</div>
+            </div>
+
+            <hr class="ticket-linea">
+
+            <div class="ticket-titulo-seccion">Productos</div>
+            ${filas}
+
+            <hr class="ticket-linea">
+
+            <div class="ticket-total-fila"><span>TOTAL</span><span>$${data.total.toFixed(2)}</span></div>
+
+            <hr class="ticket-linea">
+
+            <div class="ticket-bloque">
+                <div class="ticket-label">Método de pago</div>
+                <div>${data.metodo_pago}</div>
+            </div>
+            <div class="ticket-bloque">
+                <div class="ticket-label">Estado</div>
+                <div>${data.estado}</div>
+            </div>
+
+            <hr class="ticket-linea">
+
+            <div class="ticket-pie">Presente este código al retirar<br>su pedido.</div>
+            <div class="ticket-pie-codigo">${data.codigo}</div>
+
+            <button type="button" class="ticket-cerrar" id="cerrar-modal-codigo">Entendido</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    document.getElementById('cerrar-modal-codigo').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.remove();
+    });
+}
+
 function comprarElemento(e){
     e.preventDefault();
     if(e.target.classList.contains('agregar-carrito')){
@@ -227,7 +423,7 @@ function finalizarCompra(e){
         finalizarCompraBtn.textContent = 'Finalizar compra';
         if (data.ok) {
             vaciarCarrito();
-            mostrarNotificacion('✅ ¡Pedido #' + data.pedido_id + ' confirmado! Te contactaremos pronto.');
+            mostrarCodigoPedido(data);
         } else {
             mostrarNotificacion('Error: ' + (data.error || 'no se pudo procesar la compra'));
         }

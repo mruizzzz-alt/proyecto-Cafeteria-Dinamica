@@ -57,6 +57,7 @@
             <thead>
                 <tr style="text-align:left; border-bottom: 2px solid #eee;">
                     <th style="padding:8px;">#</th>
+                    <th style="padding:8px;">Código</th>
                     <th style="padding:8px;">Fecha</th>
                     <th style="padding:8px;">Estado</th>
                     <th style="padding:8px;">Total</th>
@@ -66,15 +67,23 @@
                 {% for pedido in pedidos %}
                 <tr style="border-bottom: 1px solid #f0f0f0;">
                     <td style="padding:8px;">#{{ pedido.id }}</td>
+                    <td style="padding:8px;">
+                        <span style="font-family:'Courier New', monospace; font-size:0.8rem; background:#F4EAE1; color:var(--primary-color); padding:3px 8px; border-radius:6px; border:1px solid #e5d8c9;" title="{{ pedido.codigo }}">
+                            {{ pedido.codigo }}
+                        </span>
+                    </td>
                     <td style="padding:8px;">{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
                     <td style="padding:8px;">{{ pedido.get_estado_display }}</td>
                     <td style="padding:8px; font-weight:600;">${{ pedido.total }}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4" style="padding:20px; text-align:center; color:#999;">Aún no tienes pedidos.</td></tr>
+                <tr><td colspan="5" style="padding:20px; text-align:center; color:#999;">Aún no tienes pedidos.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
+        <p style="margin-top:14px; font-size:0.82rem; color:#999;">
+            <i class="fas fa-info-circle"></i> Muestra el código completo al repartidor o en el mostrador para confirmar tu pedido. Toca sobre el código para verlo completo.
+        </p>
     </div>
 
 </div>

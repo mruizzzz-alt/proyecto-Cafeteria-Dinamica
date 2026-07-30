@@ -1,5 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
+import random
+import string
+
+
+def generar_codigo_pedido():
+    caracteres = string.ascii_uppercase + string.digits
+    return 'CAF-' + ''.join(random.choices(caracteres, k=6))
 
 class Negocio(models.Model):
     nombre = models.CharField(max_length=100, default='Café Hallyu')
@@ -73,7 +81,15 @@ class Pedido(models.Model):
         ('transferencia', 'Transferencia'),
     ]
     metodo_pago = models.CharField(max_length=20, choices=METODOS_PAGO)
-    
+
+    codigo = models.CharField(
+        max_length=40,
+        unique=True,
+        editable=False,
+        default=generar_codigo_pedido,
+        help_text="Código que el cliente presenta al repartidor/atención para verificar el pedido."
+    )
+
     def total(self):
         return sum(item.subtotal() for item in self.items.all())
 

@@ -6,6 +6,7 @@ from .forms import RegistroForm
 import json
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.utils import timezone
 
 def registro(request):
     if request.method == 'POST':
@@ -56,6 +57,8 @@ def finalizar_compra(request):
             return JsonResponse({'ok': False, 'error': f'Stock insuficiente para {productos_map[pid].nombre}'}, status=400)
 
     pedido = Pedido.objects.create(usuario=request.user, metodo_pago=metodo_pago)
+
+    items_factura = []
     for pid, cantidad in conteo.items():
         producto = productos_map[pid]
         ItemPedido.objects.create(
@@ -66,8 +69,27 @@ def finalizar_compra(request):
         )
         producto.stock -= cantidad
         producto.save()
+        items_factura.append({
+            'nombre': producto.nombre,
+            'cantidad': cantidad,
+            'precio_unitario': float(producto.precio),
+            'subtotal': float(producto.precio) * cantidad,
+        })
 
-    return JsonResponse({'ok': True, 'pedido_id': pedido.id})
+    fecha_local = timezone.localtime(pedido.fecha)
+
+    return JsonResponse({
+        'ok': True,
+        'pedido_id': pedido.id,
+        'codigo': pedido.codigo,
+        'fecha': fecha_local.strftime('%d/%m/%Y'),
+        'hora': fecha_local.strftime('%H:%M'),
+        'estado': pedido.get_estado_display(),
+        'metodo_pago': pedido.get_metodo_pago_display(),
+        'cliente': request.user.first_name or request.user.username,
+        'items': items_factura,
+        'total': float(pedido.total()),
+    })
 
 @login_required
 def mi_cuenta(request):
